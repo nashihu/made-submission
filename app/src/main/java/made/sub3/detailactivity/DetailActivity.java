@@ -95,7 +95,7 @@ public class DetailActivity extends AppCompatActivity {
                     public void onSuccess() {
                         backdrop.setVisibility(View.VISIBLE);
                         showButtonFav();
-                        backdrop.setImageBitmap(b);
+//                        backdrop.setImageBitmap(b);
                         findViewById(R.id.detail_backdrop_progress_bar).setVisibility(View.GONE);
                         backdrop.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -123,6 +123,7 @@ public class DetailActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess() {
                         poster.setVisibility(View.VISIBLE);
+                        findViewById(R.id.detail_poster_progress_bar).setVisibility(View.GONE);
                         poster.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -186,6 +187,11 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mDb = AppDatabase.getInstance(getApplicationContext());
         setContentView(R.layout.activity_detail);
+        ((TextView) findViewById(R.id.tv_detail_info_releasedate)).setText(getString(R.string.detail_info_release_date));
+        ((TextView) findViewById(R.id.tv_detail_info_vote)).setText(getString(R.string.detail_info_vote));
+        ((TextView) findViewById(R.id.tv_detail_info_voted_by)).setText(getString(R.string.detail_info_voted_by));
+        ((TextView) findViewById(R.id.tv_detail_info_voter)).setText(getString(R.string.detail_info_voter));
+        ((TextView) findViewById(R.id.tv_detail_info_duration)).setText(getString(R.string.detail_info_duration));
         intent = getIntent();
         final String type = getIntent().getStringExtra("type");
         final String code = getIntent().getStringExtra("id_tmdb");

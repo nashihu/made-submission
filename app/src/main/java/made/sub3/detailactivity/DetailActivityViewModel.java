@@ -114,6 +114,6 @@ public class DetailActivityViewModel extends ViewModel {
     }
 
     LiveData<ItemDetail> getData() {
-        return dataDetail;
+        return dataDetail /*new MutableLiveData<>()*/;
     }
 }
