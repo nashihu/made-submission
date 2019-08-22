@@ -39,7 +39,7 @@ public class TeleViFragment extends Fragment {
         }
     };
 
-
+    String query;
     public TeleViFragment() {
         // Required empty public constructor
     }
@@ -49,6 +49,9 @@ public class TeleViFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         newTontonanAdapter = new TontonanAdapterSub3();
+        if(getArguments()!=null) {
+            query = getArguments().getString("query");
+        }
         return inflater.inflate(R.layout.fragment_tele_vi, container, false);
     }
 
@@ -62,7 +65,11 @@ public class TeleViFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.rv_televi);
         if (getActivity() != null) {
             model = ViewModelProviders.of(getActivity()).get(TeleViViewModel.class);
-            model.setData();
+            if(query!=null) {
+                model.setSearchData(query);
+            } else {
+                model.setData();
+            }
             model.getData().observe(getActivity(), result);
         }
         recyclerView.setLayoutManager(verticalLayout);

@@ -1,6 +1,5 @@
 package made.sub3;
 
-import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -10,12 +9,10 @@ import made.sub3.favactivity.favtelefragment.FavTeleFragment;
 
 public class MyAdapter extends FragmentPagerAdapter {
 
-    private Context myContext;
-    int totalTabs;
+    private int totalTabs;
 
-    public MyAdapter(Context context, FragmentManager fm, int totalTabs) {
+    public MyAdapter(FragmentManager fm, int totalTabs) {
         super(fm);
-        myContext = context;
         this.totalTabs = totalTabs;
     }
 
@@ -24,15 +21,14 @@ public class MyAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                FavMovieFragment movieFragment = new FavMovieFragment();
-                return movieFragment;
+                return new FavMovieFragment();
             case 1:
-                FavTeleFragment favTeleFragment = new FavTeleFragment();
-                return favTeleFragment;
+                return new FavTeleFragment();
             default:
                 return null;
         }
     }
+
     // this counts total number of tabs
     @Override
     public int getCount() {

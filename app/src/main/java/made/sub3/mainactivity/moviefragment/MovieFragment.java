@@ -38,7 +38,7 @@ public class MovieFragment extends Fragment {
             }
         }
     };
-
+    String query;
     public MovieFragment() {
         // Required empty public constructor
     }
@@ -48,6 +48,9 @@ public class MovieFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         newTontonanAdapter = new TontonanAdapterSub3();
+        if(getArguments()!=null) {
+            query = getArguments().getString("query");
+        }
         return inflater.inflate(R.layout.fragment_movie, container, false);
     }
 
@@ -62,7 +65,11 @@ public class MovieFragment extends Fragment {
         recyclerView.setLayoutManager(verticalLayout);
         if (getActivity() != null) {
             model = ViewModelProviders.of(getActivity()).get(MovieViewModel.class);
-            model.setData();
+            if(query!=null) {
+                model.setSearchData(query);
+            } else {
+                model.setData();
+            }
             model.getData().observe(getActivity(), result);
 
         }
