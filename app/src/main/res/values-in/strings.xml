@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">Sub 4 Made</string>
+    <string name="title_movie">Film Bioskop</string>
+    <string name="title_tv">Televisi</string>
+
+    <string name="detail_please_wait">Mohon menunggu</string>
+    <string name="default_release_date">2018</string>
+    <string name="default_movie_desc">Memuat.. </string>
+    <string name="default_vote">6.7</string>
+    <string name="detail_info_release_date">Rilis:</string>
+    <string name="detail_info_vote">Vote:</string>
+    <string name="detail_info_voted_by">oleh:</string>
+    <string name="detail_number_vote">200</string>
+    <string name="detail_info_voter">org</string>
+    <string name="detail_info_duration">Durasi: </string>
+    <string name="detail_duration">120</string>
+    <string name="detail_minutes">menit</string>
+    <string name="genre_1">Aksi</string>
+    <string name="language_settings">Pengaturan Bahasa</string>
+    <string name="lang_not_available">Deskripsi dalam bahasa Indonesia tidak tersedia dari server.. berikut deskripsi dalam bahasa Inggris:</string>
+    <string name="poster">Poster</string>
+    <string name="backdrop">Latar</string>
+    <string name="use_backdrop">gunakan mode portrait agar backdrop terlihat lebih jelas :)</string>
+    <string name="failed_auto_rotate">auto-rotate gagal dimatikan</string>
+    <string name="success_auto_rotate">auto-rotate berhasil dimatikan</string>
+    <string name="back">Kembali</string>
+    <string name="set_as_favorite">jadikan favorit</string>
+    <string name="my_fav_s">My Fav\'s</string>
+    <string name="title_activity_fav">FavActivity</string>
+    <string name="home">Home</string>
+    <string name="remove_from_fav_s">hapus dari fav\'s</string>
+    <string name="add_widget">tambah widget</string>
+    <string name="appwidget_text">alite</string>
+
+</resources>

@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">Sub 4 Made</string>
+    <string name="title_movie">Movies</string>
+    <string name="title_tv">TV\'s</string>
+
+    <string name="detail_please_wait">Please wait</string>
+    <string name="default_release_date">2018</string>
+    <string name="default_movie_desc">Loading.. </string>
+    <string name="default_vote">6.7</string>
+    <string name="detail_info_release_date">Release Date:</string>
+    <string name="detail_info_vote">Vote:</string>
+    <string name="detail_info_voted_by">by:</string>
+    <string name="detail_number_vote">200</string>
+    <string name="detail_info_voter">voter</string>
+    <string name="detail_info_duration">Duration: </string>
+    <string name="detail_duration">120</string>
+    <string name="detail_minutes">minutes</string>
+    <string name="genre_1">Action</string>
+    <string name="language_settings">Language Settings</string>
+    <string name="lang_not_available">Deskripsi dalam bahasa Indonesia tidak tersedia dari server.. berikut deskripsi dalam bahasa Inggris:</string>
+    <string name="poster">Poster</string>
+    <string name="backdrop">Backdrop</string>
+    <string name="use_backdrop">use portrait mode to see backdrop clearer :)</string>
+    <string name="failed_auto_rotate">failed to turn-off auto-rotate</string>
+    <string name="success_auto_rotate">auto-rotate successfully turned off</string>
+    <string name="back">Back</string>
+    <string name="set_as_favorite">set as favorite</string>
+    <string name="my_fav_s">My Fav\'s</string>
+    <string name="title_activity_fav">FavActivity</string>
+    <string name="home">Home</string>
+    <string name="remove_from_fav_s">remove from fav\'s</string>
+    <string name="appwidget_text">ada data nihh</string>
+    <string name="add_widget">Add widget</string>
+</resources>
