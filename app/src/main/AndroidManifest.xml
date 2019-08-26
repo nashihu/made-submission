@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
 
     <application
@@ -21,6 +23,11 @@
             <meta-data android:name="android.appwidget.provider"
                 android:resource="@xml/stackwidgetinfo" />
         </receiver>
+
+        <receiver
+            android:name=".AlarmReceiver"
+            android:enabled="true"
+            android:exported="true" />
 
         <service android:name=".widgets.StackWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS"

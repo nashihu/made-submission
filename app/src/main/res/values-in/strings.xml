@@ -31,5 +31,11 @@
     <string name="remove_from_fav_s">hapus dari fav\'s</string>
     <string name="add_widget">tambah widget</string>
     <string name="appwidget_text">alite</string>
+    <string name="notification_setting">Notification Setting</string>
+    <string name="daily_notification">Daily Notification</string>
+    <string name="new_release_notification">New Release Notification</string>
+    <string name="preference_file_key">file key</string>
+    <string name="reminder_7">REMINDER 7</string>
+    <string name="reminder_new_movie">reminder new movie</string>
 
 </resources>

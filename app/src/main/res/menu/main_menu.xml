@@ -4,4 +4,9 @@
         android:id="@+id/menu_language_setting"
         android:title="@string/language_settings" />
 
+    <item
+        android:id="@+id/menu_notification_setting"
+        android:title="@string/notification_setting"
+        />
+
 </menu>

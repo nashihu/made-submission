@@ -12,12 +12,17 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import made.sub3.AlarmReceiver;
 import made.sub3.MyAdapter;
 import made.sub3.NullFragment;
 import made.sub3.R;
@@ -161,11 +166,61 @@ public class MainActivity extends AppCompatActivity {
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         viewPager = findViewById(R.id.viewPager);
         tabLayout = findViewById(R.id.tabLayout);
+        setReminder("08:00","ada film baru!");
+        AlarmReceiver alarmReceiver = new AlarmReceiver();
+        Date currentDate = new Date(System.currentTimeMillis());
+        DateFormat df = new SimpleDateFormat("HH:mm");
+        String hour = df.format(currentDate);
+        int minute = Integer.valueOf(hour.split(":")[1]);
+        minute += 1;
+        hour = hour.split(":")[0];
+        String time = hour+":"+minute;
+        String message = "ada film baru!";
+        Log.e("MA","before: " + hour + ":" + minute);
+        alarmReceiver.setNewMovieAlarm(this,AlarmReceiver.TYPE_NEW_MOVIE,
+                time,
+                message
+        );
+
+        setReminder("07:00","ayo buka lagi aplikasinya");
+
+//        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(
+//                getString(R.string.preference_file_key),Context.MODE_PRIVATE);
+//
+//        boolean reminder_7_checked = sharedPreferences.getBoolean(getString(R.string.reminder_7),false);
+//        boolean reminder_new_movie = sharedPreferences.getBoolean(getString(R.string.reminder_new_movie),false);
+//        if(reminder_7_checked) {
+//            setReminder("07:00","ayo buka lagi aplikasinya");
+//        } else {
+//            Toast.makeText(this, "reminder 7 false semua", Toast.LENGTH_SHORT).show();
+//        }
+//        if(reminder_new_movie) {
+//            setReminder("08:00","ada film baru!");
+//        } else {
+//            Toast.makeText(this, "reminder movie false semua", Toast.LENGTH_SHORT).show();
+//        }
+
     }
 
     void clearTab() {
         viewPager.setAdapter(new MyAdapter(getSupportFragmentManager(), 0));
         tabLayout.removeAllTabs();
+
+    }
+
+    public void setReminder(String time, String message) {
+        AlarmReceiver alarmReceiver = new AlarmReceiver();
+        Date currentDate = new Date(System.currentTimeMillis());
+        DateFormat df = new SimpleDateFormat("HH:mm");
+        String hour = df.format(currentDate);
+        int minute = Integer.valueOf(hour.split(":")[1]);
+        hour = hour.split(":")[0];
+        time = hour+":"+minute;
+        Log.e("MA","before: " + hour + ":" + minute);
+        alarmReceiver.setDailyAlarm(this,AlarmReceiver.TYPE_REPEATING,
+                time,
+                message
+                );
     }
 
     void showTab() {
@@ -199,9 +254,21 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.menu_language_setting) {
-            startActivity(new Intent(Settings.ACTION_LOCALE_SETTINGS));
+        switch (item.getItemId()) {
+            case R.id.menu_language_setting:
+                startActivity(new Intent(Settings.ACTION_LOCALE_SETTINGS));
+                break;
+            case R.id.menu_notification_setting:
+                selectedFragment = 0;
+                setCheckable(navView,false);
+                fragment = new NotifSettingFragment();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.container_layout, fragment, fragment.getClass().getSimpleName())
+                        .commit();
+                clearTab();
+                break;
         }
+
         return super.onOptionsItemSelected(item);
     }
 }
