@@ -1,21 +1,21 @@
 package made.sub3.detailactivity;
 
-import made.sub3.widgets.StackWidgetProvider;
-import made.sub3.widgets.StackWidgetService;
-
 import android.app.AlertDialog;
 import android.appwidget.AppWidgetManager;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.ComponentName;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
@@ -32,18 +32,25 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Locale;
 
 import made.sub3.BuildConfig;
 import made.sub3.ItemDetail;
 import made.sub3.R;
-import made.sub3.widgets.WidgetItem;
 import made.sub3.database.AppDatabase;
 import made.sub3.database.AppExecutors;
+import made.sub3.widgets.StackWidgetProvider;
+import made.sub3.widgets.WidgetItem;
+
+import static made.sub3.providerstuff.DatabaseContract.TontonanColumns.CONTENT_URI;
+import static made.sub3.providerstuff.DatabaseContract.TontonanColumns.DESCRIPTION;
+import static made.sub3.providerstuff.DatabaseContract.TontonanColumns.PHOTO_URL;
+import static made.sub3.providerstuff.DatabaseContract.TontonanColumns.TITLE;
+import static made.sub3.providerstuff.MappingHelper.mapCursorToArrayList;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -60,10 +67,8 @@ public class DetailActivity extends AppCompatActivity {
     private DetailActivityViewModel model;
     private Intent intent;
     private Integer successCounter = 0;
-    byte[] savedPoster;
     String absolute_path;
     String child;
-    Bitmap b;
     private final Observer<ItemDetail> strings = new Observer<ItemDetail>() {
 
         @Override
@@ -87,6 +92,13 @@ public class DetailActivity extends AppCompatActivity {
                         intent.getStringExtra("type"),
                         intent.getStringExtra("id_tmdb")
                 );
+
+                ((TextView) findViewById(R.id.tv_detail_info_releasedate)).setText(getString(R.string.detail_info_release_date));
+                ((TextView) findViewById(R.id.tv_detail_info_vote)).setText(getString(R.string.detail_info_vote));
+                ((TextView) findViewById(R.id.tv_detail_info_voted_by)).setText(getString(R.string.detail_info_voted_by));
+                ((TextView) findViewById(R.id.tv_detail_info_voter)).setText(getString(R.string.detail_info_voter));
+                ((TextView) findViewById(R.id.tv_detail_info_duration)).setText(getString(R.string.detail_info_duration));
+                ((TextView) findViewById(R.id.tv_detail_info_duration_minute)).setText(getString(R.string.detail_minutes));
                 final String poster_url = itemDetail.getPoster_url_for_detail_activity();
                 Log.i("URLL", itemDetail.getPoster_url_for_detail_activity());
                 Log.i("URLL", itemDetail.getBackdrop_url_or_poster_url());
@@ -95,7 +107,6 @@ public class DetailActivity extends AppCompatActivity {
                     public void onSuccess() {
                         backdrop.setVisibility(View.VISIBLE);
                         showButtonFav();
-//                        backdrop.setImageBitmap(b);
                         findViewById(R.id.detail_backdrop_progress_bar).setVisibility(View.GONE);
                         backdrop.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -148,23 +159,12 @@ public class DetailActivity extends AppCompatActivity {
                             e.printStackTrace();
                         } finally {
                             try {
-                                fos.close();
+                                if (fos != null) fos.close();
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
                         }
                         absolute_path = directory.getAbsolutePath();
-
-
-//                        try {
-//                            File f=new File(absolute_path, child);
-//                            b = BitmapFactory.decodeStream(new FileInputStream(f));
-//                        }
-//                        catch (FileNotFoundException e)
-//                        {
-//                            e.printStackTrace();
-//                        }
-
 
                     }
 
@@ -187,11 +187,6 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mDb = AppDatabase.getInstance(getApplicationContext());
         setContentView(R.layout.activity_detail);
-        ((TextView) findViewById(R.id.tv_detail_info_releasedate)).setText(getString(R.string.detail_info_release_date));
-        ((TextView) findViewById(R.id.tv_detail_info_vote)).setText(getString(R.string.detail_info_vote));
-        ((TextView) findViewById(R.id.tv_detail_info_voted_by)).setText(getString(R.string.detail_info_voted_by));
-        ((TextView) findViewById(R.id.tv_detail_info_voter)).setText(getString(R.string.detail_info_voter));
-        ((TextView) findViewById(R.id.tv_detail_info_duration)).setText(getString(R.string.detail_info_duration));
         intent = getIntent();
         final String type = getIntent().getStringExtra("type");
         final String code = getIntent().getStringExtra("id_tmdb");
@@ -210,7 +205,6 @@ public class DetailActivity extends AppCompatActivity {
         TextView release_date_field;
         findViewById(R.id.image_poster_core).setVisibility(View.INVISIBLE);
         poster = findViewById(R.id.image_poster_core);
-//        Picasso.get().load(id_image).into(poster);
         release_date = findViewById(R.id.tv_detail_releasedate);
         vote = findViewById(R.id.tv_detail_vote);
         voter = findViewById(R.id.tv_detail_number_vote);
@@ -222,6 +216,7 @@ public class DetailActivity extends AppCompatActivity {
         fab = findViewById(R.id.fab_detail_fav);
         fab.hide();
         release_date_field = findViewById(R.id.tv_detail_info_releasedate);
+        new LoadTontonanAsyc(this).execute();
 
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
             @Override
@@ -254,6 +249,8 @@ public class DetailActivity extends AppCompatActivity {
                                 public void run() {
                                     mDb.itemDao().deteleTontonan(title);
                                     mDb.itemDao().deleteWidgetItem(title);
+                                    Uri data = Uri.parse(CONTENT_URI + "/" + itemDetail.getId());
+                                    getContentResolver().delete(data, null, null);
                                     Intent toastIntent = new Intent(getApplicationContext(), StackWidgetProvider.class);
                                     toastIntent.setAction(StackWidgetProvider.TOAST_ACTION);
                                     sendBroadcast(toastIntent);
@@ -275,12 +272,18 @@ public class DetailActivity extends AppCompatActivity {
                                     AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplicationContext());
                                     ComponentName thisWidget = new ComponentName(getApplicationContext(), StackWidgetProvider.class);
                                     int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisWidget);
-                                    for (int i = 0; i < appWidgetIds.length; i++) {
+
+                                    for (int appWidgetId : appWidgetIds) {
                                         Intent toastIntent = new Intent(getApplicationContext(), StackWidgetProvider.class);
                                         toastIntent.setAction(StackWidgetProvider.TOAST_ACTION);
-                                        toastIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
+                                        toastIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
                                         sendBroadcast(toastIntent);
                                     }
+                                    ContentValues values = new ContentValues();
+                                    values.put(TITLE, title);
+                                    values.put(DESCRIPTION, "desc");
+                                    values.put(PHOTO_URL, itemDetaill.getPoster_url_for_detail_activity());
+                                    getContentResolver().insert(CONTENT_URI, values);
 
 
                                     runOnUiThread(new Runnable() {
@@ -341,23 +344,30 @@ public class DetailActivity extends AppCompatActivity {
         });
         alert.show();
     }
-//
-//    @Override
-//    public boolean onCreateOptionsMenu(final Menu menu) {
-//
-//        return super.onCreateOptionsMenu(menu);
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        if (item.getItemId() == R.id.menu_fav) {
-//
-//        } else if (item.getItemId() == R.id.menu_fav_remove) {
-//
-//
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
+
+    private static class LoadTontonanAsyc extends AsyncTask<Void, Void, Cursor> {
+
+        private final WeakReference<Context> weakContext;
+        private final Context context;
+
+        private LoadTontonanAsyc(Context context) {
+            weakContext = new WeakReference<>(context);
+            this.context = context;
+        }
+
+        @Override
+        protected Cursor doInBackground(Void... voids) {
+            Context context = weakContext.get();
+            return context.getContentResolver().query(CONTENT_URI, null, null, null);
+        }
+
+        @Override
+        protected void onPostExecute(Cursor cursor) {
+            super.onPostExecute(cursor);
+            ArrayList<ItemDetail> itemDetails = mapCursorToArrayList(cursor);
+            Toast.makeText(context, "size: " + itemDetails.size() + "", Toast.LENGTH_SHORT).show();
+        }
+    }
 
     void showButtonFav() {
         successCounter++;

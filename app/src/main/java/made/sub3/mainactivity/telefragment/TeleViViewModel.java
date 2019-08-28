@@ -3,6 +3,7 @@ package made.sub3.mainactivity.telefragment;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.content.ContentValues;
 import android.util.Log;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -43,6 +44,9 @@ public class TeleViViewModel extends ViewModel {
                         JSONObject item = list.getJSONObject(i);
                         ItemDetail itemDetail = new ItemDetail(item, "tv");
                         itemDetails.add(itemDetail);
+
+                        ContentValues mContentValues = new ContentValues();
+
 
                     }
                     data.postValue(itemDetails);

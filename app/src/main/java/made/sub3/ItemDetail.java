@@ -79,6 +79,22 @@ public class ItemDetail {
         this.id_tmdb = id_tmdb;
     }
 
+    @Ignore
+    public ItemDetail(int id, String title, String photo_url, String desc) {
+        this.id = id;
+        this.desc_or_title = desc;
+        this.poster_url_for_detail_activity = photo_url;
+        this.rating = "";
+        this.voters = "";
+        this.release_date = "";
+        this.duration_or_id_tmdb = "";
+        this.backdrop_url_or_poster_url = "";
+        this.genres_or_type = "";
+        this.this_title = title;
+        this.activity_type = "";
+        this.id_tmdb = "";
+    }
+
     public String getId_tmdb() {
         return id_tmdb;
     }

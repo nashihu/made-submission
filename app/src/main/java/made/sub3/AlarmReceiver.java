@@ -44,8 +44,8 @@ public class AlarmReceiver extends BroadcastReceiver {
     public static final String NEW_MOVIE = "ada film baru!";
 
     // Siapkan 2 id untuk 2 macam alarm, onetime dna repeating
-    private final int ID_NEW_MOVIE = 100;
-    private final int ID_REPEATING = 101;
+    public static final int ID_NEW_MOVIE = 100;
+    public static final int ID_REPEATING = 101;
 
     public AlarmReceiver() { }
 
@@ -64,7 +64,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             return;
         } else if (reminder_7_checked) {
             Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(),R.drawable.ic_live_tv_black_24dp);
-            showAlarmNotification(context,"siiip","INI NOTIF ONE TIME YAA",notifId, bitmap);
+            showAlarmNotification(context,"Halo semuanyaa","Sudah cek film hari ini? ayo bukaa",notifId, bitmap);
         }
 
 
@@ -130,6 +130,7 @@ public class AlarmReceiver extends BroadcastReceiver {
     public void setDailyAlarm(Context context, String type, String time, String message) {
         if (isDateInvalid(time, TIME_FORMAT)) return;
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+
         Intent intent = new Intent(context, AlarmReceiver.class);
         intent.putExtra(EXTRA_MESSAGE, message);
         intent.putExtra(EXTRA_TYPE, type);
@@ -142,7 +143,18 @@ public class AlarmReceiver extends BroadcastReceiver {
         if (alarmManager != null) {
             alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
         }
-        Toast.makeText(context, "Repeating alarm set up", Toast.LENGTH_SHORT).show();
+
+
+
+    }
+
+    public void cancelAlarm(Context context, String message, String type, int ID) {
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        intent.putExtra(EXTRA_MESSAGE, message);
+        intent.putExtra(EXTRA_TYPE, type);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, ID, intent, 0);
+        alarmManager.cancel(pendingIntent);
     }
 
     public void setNewMovieAlarm(Context context, String type, String time, String message) {

@@ -21,6 +21,7 @@ import android.widget.Toast;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 import made.sub3.AlarmReceiver;
 import made.sub3.MyAdapter;
@@ -30,8 +31,6 @@ import made.sub3.mainactivity.moviefragment.MovieFragment;
 import made.sub3.mainactivity.telefragment.TeleViFragment;
 
 public class MainActivity extends AppCompatActivity {
-    public static final String ACTION_VIEW = "android.intent.action.VIEW";
-    public static final String EXTRA_ID = "wadigidi";
     int selectedFragment = 0;
 
     private final BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -166,23 +165,7 @@ public class MainActivity extends AppCompatActivity {
         navView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         viewPager = findViewById(R.id.viewPager);
         tabLayout = findViewById(R.id.tabLayout);
-        setReminder("08:00","ada film baru!");
-        AlarmReceiver alarmReceiver = new AlarmReceiver();
-        Date currentDate = new Date(System.currentTimeMillis());
-        DateFormat df = new SimpleDateFormat("HH:mm");
-        String hour = df.format(currentDate);
-        int minute = Integer.valueOf(hour.split(":")[1]);
-        minute += 1;
-        hour = hour.split(":")[0];
-        String time = hour+":"+minute;
-        String message = "ada film baru!";
-        Log.e("MA","before: " + hour + ":" + minute);
-        alarmReceiver.setNewMovieAlarm(this,AlarmReceiver.TYPE_NEW_MOVIE,
-                time,
-                message
-        );
 
-        setReminder("07:00","ayo buka lagi aplikasinya");
 
 //        SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences(
 //                getString(R.string.preference_file_key),Context.MODE_PRIVATE);
@@ -208,20 +191,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void setReminder(String time, String message) {
-        AlarmReceiver alarmReceiver = new AlarmReceiver();
-        Date currentDate = new Date(System.currentTimeMillis());
-        DateFormat df = new SimpleDateFormat("HH:mm");
-        String hour = df.format(currentDate);
-        int minute = Integer.valueOf(hour.split(":")[1]);
-        hour = hour.split(":")[0];
-        time = hour+":"+minute;
-        Log.e("MA","before: " + hour + ":" + minute);
-        alarmReceiver.setDailyAlarm(this,AlarmReceiver.TYPE_REPEATING,
-                time,
-                message
-                );
-    }
+
 
     void showTab() {
         tabLayout.addTab(tabLayout.newTab().setText(getString(R.string.title_movie)));
