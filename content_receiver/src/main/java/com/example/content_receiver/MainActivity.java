@@ -10,6 +10,7 @@ import android.os.HandlerThread;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -30,7 +31,12 @@ public class MainActivity extends AppCompatActivity implements LoadTontonanCallb
         handlerThread.start();
         Handler handler = new Handler(handlerThread.getLooper());
         myObserver = new DataObserver(handler, this);
-        getContentResolver().registerContentObserver(CONTENT_URI, true, myObserver);
+        try {
+            getContentResolver().registerContentObserver(CONTENT_URI, true, myObserver);
+        } catch (RuntimeException e) {
+            Log.e("TAG","kena RE woiii");
+        }
+//        getContentResolver().registerContentObserver(CONTENT_URI, true, myObserver);
         new getData(this, this).execute();
         recyclerView = findViewById(R.id.rv_main);
         adapter = new MainAdapter();
@@ -44,7 +50,17 @@ public class MainActivity extends AppCompatActivity implements LoadTontonanCallb
 
     @Override
     public void postExecute(Cursor tontonans) {
-        ArrayList<TontonanItem> tontonanItems = MappingHelper.mapCursorToArrayList(tontonans);
+        ArrayList<TontonanItem> tontonanItems = new ArrayList<>();
+        String url = "https://raw.githubusercontent.com/nashihu/todo_app/master/tidak%20ada%20data%20bro.png";
+        if(tontonans!=null) {
+            if(!tontonans.moveToNext()) {
+                tontonanItems.add(new TontonanItem(2,"ga ada film favorit..","",url));
+            } else {
+                tontonanItems = MappingHelper.mapCursorToArrayList(tontonans);
+            }
+        } else {
+            tontonanItems.add(new TontonanItem(1,"aplikasi utamanya belum di-install..","..",url));
+        }
         adapter.setItems(this,tontonanItems);
         recyclerView.setAdapter(adapter);
 

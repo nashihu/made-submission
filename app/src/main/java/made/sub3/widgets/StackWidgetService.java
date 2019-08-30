@@ -15,9 +15,11 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
+import android.widget.Toast;
 
 import made.sub3.R;
 import made.sub3.widgets.WidgetItem;
@@ -36,7 +38,7 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
 
     private List<Bitmap> bitmaps = new ArrayList<>();
     private Context mContext;
-    private List<WidgetItem> DAOitems;
+    private List<WidgetItem> DAOitems = new ArrayList<>();
     //TODO ini ntar di uncomm
     private int mAppWidgetId;
 
@@ -48,26 +50,28 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
     }
 
     public void onCreate() {
-        mDb = AppDatabase.getInstance(mContext);
+
         // In onCreate() you setup any connections / cursors to your data source. Heavy lifting,
         // for example downloading or creating content etc, should be deferred to onDataSetChanged()
         // or getViewAt(). Taking more than 20 seconds in this call will result in an ANR.
-
-//        TODO ini sebelumnya dipindahin ke onDatasetChanged
-//        bitmaps.add(BitmapFactory.decodeResource(mContext.getResources(),R.drawable.backdrop_alita));
-//        bitmaps.add(BitmapFactory.decodeResource(mContext.getResources(),R.drawable.movie_alita));
-//        bitmaps.add(BitmapFactory.decodeResource(mContext.getResources(),R.drawable.backdrop_alita));
-
+        mDb = AppDatabase.getInstance(mContext);
         AppExecutors.getInstance().diskIO().execute(new Runnable() {
 
             @Override
             public void run() {
-
+                bitmaps.clear();
                 DAOitems = mDb.itemDao().loadAllWidgetItem();
+                onDataSetChanged();
 
 
             }
         });
+
+
+//        TODO ini sebelumnya dipindahin ke onDatasetChanged
+
+//        bitmaps.add(BitmapFactory.decodeResource(mContext.getResources(),R.drawable.movie_alita));
+//        bitmaps.add(BitmapFactory.decodeResource(mContext.getResources(),R.drawable.backdrop_alita));
 
 
         // We sleep for 3 seconds here to show how the empty view appears in the interim.
@@ -106,24 +110,22 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         fillInIntent.putExtras(extras);
         rv.setOnClickFillInIntent(R.id.widget_item_image, fillInIntent);
 
-        AppExecutors.getInstance().diskIO().execute(new Runnable() {
-
-            @Override
-            public void run() {
-
-                DAOitems = mDb.itemDao().loadAllWidgetItem();
-
-
-
-                Log.d("SWS", "udah update nih dao nya, size: " + DAOitems.size());
-                Log.d("SWS", "kalo getCountnya? ->" + getCount());
-                Log.d("SWS", mAppWidgetId + "");
-
-
-            }
-
-        });
-
+//        AppExecutors.getInstance().diskIO().execute(new Runnable() {
+//
+//            @Override
+//            public void run() {
+//
+//                DAOitems = mDb.itemDao().loadAllWidgetItem();
+//
+//
+//                Log.d("SWS", "udah update nih dao nya, size: " + DAOitems.size());
+//                Log.d("SWS", "kalo getCountnya? ->" + getCount());
+//                Log.d("SWS", mAppWidgetId + "");
+//
+//
+//            }
+//
+//        });
 
 
 //        new DownloadImageTask(bitmaps).execute("https://image.tmdb.org/t/p/original/or06FN3Dka5tukK1e9sl16pB3iy.jpg");
@@ -179,9 +181,10 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         // from the network, etc., it is ok to do it here, synchronously. The widget will remain
         // in its current state while work is being done here, so you don't need to worry about
         // locking up the widget.
+        bitmaps.add(BitmapFactory.decodeResource(mContext.getResources(),R.drawable.backdrop_alita));
         bitmaps.clear();
         for (int position = 0; position < DAOitems.size(); position++) {
-            Log.d("Widget", "index ke-" + position);
+
             try {
                 Log.d("Widget", "index ke-" + position);
                 String absolute_path = DAOitems.get(position).getAbsolute_path();
@@ -197,34 +200,32 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory {
         }
 
 
-
-
     }
 
-    class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        List<Bitmap> bmImage;
-
-        public DownloadImageTask(List<Bitmap> bmImage) {
-            this.bmImage = bmImage;
-        }
-
-        protected Bitmap doInBackground(String... urls) {
-            String urldisplay = urls[0];
-            Bitmap bmp = null;
-            try {
-                InputStream in = new java.net.URL(urldisplay).openStream();
-                bmp = BitmapFactory.decodeStream(in);
-            } catch (Exception e) {
-                Log.e("Error", e.getMessage());
-                e.printStackTrace();
-            }
-            return bmp;
-        }
-
-        protected void onPostExecute(Bitmap result) {
-            this.bmImage.add(result);
-            getViewAt(0);
-
-        }
-    }
+//    class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
+//        List<Bitmap> bmImage;
+//
+//        public DownloadImageTask(List<Bitmap> bmImage) {
+//            this.bmImage = bmImage;
+//        }
+//
+//        protected Bitmap doInBackground(String... urls) {
+//            String urldisplay = urls[0];
+//            Bitmap bmp = null;
+//            try {
+//                InputStream in = new java.net.URL(urldisplay).openStream();
+//                bmp = BitmapFactory.decodeStream(in);
+//            } catch (Exception e) {
+//                Log.e("Error", e.getMessage());
+//                e.printStackTrace();
+//            }
+//            return bmp;
+//        }
+//
+//        protected void onPostExecute(Bitmap result) {
+//            this.bmImage.add(result);
+//            getViewAt(0);
+//
+//        }
+//    }
 }
