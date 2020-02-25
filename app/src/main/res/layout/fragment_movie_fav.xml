@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:layout_gravity="center"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".favactivity.favmoviefragment.FavMovieFragment">
+    tools:context=".modules.favactivity.favmoviefragment.FavMovieFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_movie_fav"

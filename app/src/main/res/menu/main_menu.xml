@@ -9,4 +9,9 @@
         android:title="@string/notification_setting"
         />
 
+    <item
+        android:id="@+id/login_spring"
+        android:title="@string/login_spring"
+        />
+
 </menu>

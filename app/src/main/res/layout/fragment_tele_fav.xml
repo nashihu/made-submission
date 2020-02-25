@@ -5,7 +5,7 @@
     android:layout_gravity="center"
     android:orientation="vertical"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".favactivity.favtelefragment.FavTeleFragment">
+    tools:context=".modules.favactivity.favtelefragment.FavTeleFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_tele_fav"

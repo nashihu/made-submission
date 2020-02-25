@@ -6,7 +6,7 @@
     android:layout_gravity="center"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".mainactivity.moviefragment.MovieFragment">
+    tools:context=".modules.mainactivity.moviefragment.MovieFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_movie"

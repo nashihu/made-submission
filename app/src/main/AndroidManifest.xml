@@ -19,6 +19,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <uses-library android:name="org.apache.http.legacy" android:required="false" />
         <receiver android:name=".widgets.StackWidgetProvider">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -34,7 +35,7 @@
         <service android:name=".widgets.StackWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS"
             android:exported="false" />
-        <activity android:name=".favactivity.FavActivity"/>
+        <activity android:name=".modules.favactivity.FavActivity"/>
         <provider
             android:authorities="made.sub3"
             android:name=".providerstuff.TontonanProvider"
@@ -42,9 +43,9 @@
             android:readPermission="made.sub3.READ_DATABASE"
             android:writePermission="made.sub3.WRITE_DATABASE"
             />
-        <activity android:name=".detailactivity.DetailActivity" />
+        <activity android:name=".modules.detailactivity.DetailActivity" />
         <activity
-            android:name=".mainactivity.MainActivity"
+            android:name=".modules.mainactivity.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -53,6 +54,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".modules.spring.login.LoginActivity"/>
+        <activity android:name=".modules.spring.student.StudentActivity" />
     </application>
 
 </manifest>

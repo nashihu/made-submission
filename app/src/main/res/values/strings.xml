@@ -37,4 +37,6 @@
     <string name="preference_file_key">file key</string>
     <string name="reminder_7">REMINDER 7</string>
     <string name="reminder_new_movie">reminder new movie</string>
+    <string name="login_spring">Login Spring</string>
+    <string name="login">Login</string>
 </resources>

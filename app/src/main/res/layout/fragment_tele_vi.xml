@@ -6,7 +6,7 @@
     android:layout_gravity="center"
     android:gravity="center"
     android:orientation="vertical"
-    tools:context=".mainactivity.telefragment.TeleViFragment">
+    tools:context=".modules.mainactivity.telefragment.TeleViFragment">
 
 
     <android.support.v7.widget.RecyclerView
